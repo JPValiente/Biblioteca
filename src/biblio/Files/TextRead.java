@@ -5,11 +5,14 @@
  */
 package biblio.Files;
 
+import biblio.Models.Estudiante;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +26,8 @@ public class TextRead extends Thread{
     private static long tiempoReferenciaOriginal;
     private String absolutePath;
     private String[] commands;
+    private List<String> commandList = new ArrayList<>();
+    private List<Object> attribs;
 
     @Override
     public void run() {
@@ -67,11 +72,106 @@ public class TextRead extends Thread{
     
     
     public void identificarComando(String linea){
-        commands=linea.split(":");
-        
-        if (linea.contains("ESTUDIANTE")) {
-            System.out.println(commands[0]);
+        commands=linea.split("\n");
+        for (String command : commands) {
+            commandList.add(command);
         }
+        for (String command : commandList) {
+            commandList.remove(0);
+            if(command.equalsIgnoreCase("estudiante")) {
+                Estudiante estudiante = estudiante();
+                if(estudiante != null) {
+                    //Agregar a un arreglo de estudiantes
+                }
+            }
+        }
+    }
+    
+    /*
+    * @javadoc de ahuevo :v
+    *
+    * Analizador Sintactico Descendente.
+    *
+    * Cada metodo es una regla de la gramática.
+    *
+    * Puto el que lo lea, ya deberias saber esto.
+    *
+    * Siempre obtiene lo que esta al principio del arraylist de Strings,
+    * si es valido lo que se obtiene, entonces elimina el index 0 del arraylist,
+    * y continua con el siguiente estado (En este caso, metodo)
+    *
+    * PD: Esto es atributos heredados y los retorna en forma de metodo juas juas juas
+    *
+    * Va recolectando las cosas en un arreglo, cuando llega a la ultima regla, que
+    * es la de la carrera, se crea el objeto 'Estudiante' y lo retorna hasta el metodo
+    * que implemento el metodo estudiante().
+    *
+    * PD2: Al final se me ocurrio que pude haber hecho atributos sintetizados, pero ya
+    * esta hecho asi que me pela jsjsjs
+    *
+    * PD3: HIJO DE PUTA COPIASTE TODA LA CLASE MALDITO, OJALA TE PONGAN 0 MIERDA
+    *
+    * 
+    */
+    
+    // Produccion inicial
+    
+    public Estudiante estudiante() {
+        attribs = new ArrayList<>();
+        return carnetEstudiante();
+    }
+    
+    public Estudiante carnetEstudiante() {
+        String command = commandList.get(0);
+        String[] line = command.split(":");
+        if(line[0].equals("CARNET")) {
+            try {
+                commandList.remove(0);
+                int carnet = Integer.parseInt(line[1]);
+                attribs.add(carnet);
+                return nombreEstudiante();
+            } catch (Exception ex){
+                System.err.println(ex.getMessage());
+                return null;
+            }
+        } 
+        return null;
+    }
+    
+    public Estudiante nombreEstudiante() {
+        String command = commandList.get(0);
+        String[] line = command.split(":");
+        if(line[0].equalsIgnoreCase("nombre")) {
+            try {
+                commandList.remove(0);
+                attribs.add(line[1]); 
+            } catch(Exception ex) {
+                System.err.println(ex.getMessage());
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    public Estudiante carreraEstudiante() {
+        String command = commandList.get(0);
+        String[] line = command.split(":");
+        if(line[0].equalsIgnoreCase("carrera")) {
+            try {
+                commandList.remove(0);
+                int carrera = Integer.parseInt(line[1]);
+                attribs.add(carrera);
+                return crearEstudiante();
+            } catch(Exception ex) {
+                System.err.println(ex.getMessage());
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    public Estudiante crearEstudiante() {
+        return new Estudiante((int)attribs.get(0),(int)attribs.get(2),(String)attribs.get(3));
     }
 
 }
