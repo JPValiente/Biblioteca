@@ -11,7 +11,7 @@ package biblio.Models;
  */
 public class Estudiante {
     
-     private int carnet;
+    private int carnet;
     private int carrera;
     private String nombre;
     private int fechaNacimiendo;
