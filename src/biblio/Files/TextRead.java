@@ -58,11 +58,13 @@ public class TextRead extends Thread{
 
             buffer = new BufferedReader(lector);
             String data = buffer.readLine();
+            String complete = data;
             while (data != null) {
-                identificarComando(data);
+                data = buffer.readLine();
+                complete += "\n"+data;
                 esperar(0);
-                
             }
+            identificarComando(complete);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(TextRead.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -77,9 +79,9 @@ public class TextRead extends Thread{
             commandList.add(command);
         }
         for (String command : commandList) {
-            commandList.remove(0);
             if(command.equalsIgnoreCase("estudiante")) {
                 Estudiante estudiante = estudiante();
+                System.out.println("");
                 if(estudiante != null) {
                     //Agregar a un arreglo de estudiantes
                 }
@@ -118,6 +120,7 @@ public class TextRead extends Thread{
     
     public Estudiante estudiante() {
         attribs = new ArrayList<>();
+        commandList.remove(0);
         return carnetEstudiante();
     }
     
@@ -144,7 +147,8 @@ public class TextRead extends Thread{
         if(line[0].equalsIgnoreCase("nombre")) {
             try {
                 commandList.remove(0);
-                attribs.add(line[1]); 
+                attribs.add(line[1]);
+                return carreraEstudiante();
             } catch(Exception ex) {
                 System.err.println(ex.getMessage());
                 return null;
@@ -171,7 +175,10 @@ public class TextRead extends Thread{
     }
     
     public Estudiante crearEstudiante() {
-        return new Estudiante((int)attribs.get(0),(int)attribs.get(2),(String)attribs.get(3));
+        Estudiante estudiante = new Estudiante((int)attribs.get(0),(int)attribs.get(2),(String)attribs.get(1));
+        commandList.remove(0);
+        commandList.remove(0);
+        return estudiante;
     }
 
 }

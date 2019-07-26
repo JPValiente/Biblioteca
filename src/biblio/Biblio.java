@@ -19,7 +19,7 @@ public class Biblio {
      */
     public static void main(String[] args) {
         initComponents();
-        new TextRead("F:\\Gamcas\\Documents\\NetBeansProjects\\Biblio\\j.txt").run();
+        new TextRead("./algo.txt").run();
     }
     
     
